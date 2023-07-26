@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { FaEdit, FaPhoneAlt, FaTrash } from "react-icons/fa";
 import { AiOutlineMail } from "react-icons/ai";
 
@@ -11,9 +11,17 @@ const UserCard = ({ user, onDelete, onUpdate }) => {
   } = user;
 
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [name, setName] = useState(initialName);
-  const [email, setEmail] = useState(initialEmail);
-  const [phone, setPhone] = useState(initialPhone);
+  const [tempName, setTempName] = useState(initialName);
+  const [tempEmail, setTempEmail] = useState(initialEmail);
+  const [tempPhone, setTempPhone] = useState(initialPhone);
+
+  useEffect(() => {
+    // Reset the temporary state whenever the modal is opened or the user changes
+    // ( when the user cancels the edit and opens the modal again)
+    setTempName(initialName);
+    setTempEmail(initialEmail);
+    setTempPhone(initialPhone);
+  }, [isModalOpen, initialName, initialEmail, initialPhone]);
 
   const handleDelete = () => {
     onDelete(_id);
@@ -32,15 +40,15 @@ const UserCard = ({ user, onDelete, onUpdate }) => {
   };
 
   const handleUpdate = () => {
-    if (!isEmailValid(email) || !isPhoneValid(phone)) {
+    if (!isEmailValid(tempEmail) || !isPhoneValid(tempPhone)) {
       alert("Please enter valid email and phone number.");
       return;
     }
 
     const updatedUserData = {
-      name,
-      email,
-      phone,
+      name: tempName,
+      email: tempEmail,
+      phone: tempPhone,
     };
 
     onUpdate(_id, updatedUserData);
@@ -59,13 +67,13 @@ const UserCard = ({ user, onDelete, onUpdate }) => {
     <>
       {/* cards */}
       <div className="border p-4 shadow-xl hover:bg-slate-200 rounded-lg m-4 w-64">
-        <h3 className="font-bold mb-2"> {name}</h3>
+        <h3 className="font-bold mb-2"> {tempName}</h3>
         <div className="flex items-center justify-center gap-1">
           <AiOutlineMail className="" />
-          <p className="mb-2"> {email}</p>
+          <p className="mb-2"> {tempEmail}</p>
         </div>
         <div className="flex items-center justify-center gap-1">
-          <FaPhoneAlt /> <p>{phone}</p>
+          <FaPhoneAlt /> <p>{tempPhone}</p>
         </div>
 
         <div className="flex items-center justify-between">
@@ -92,25 +100,24 @@ const UserCard = ({ user, onDelete, onUpdate }) => {
               </h3>
               <input
                 type="text"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
+                value={tempName}
+                onChange={(e) => setTempName(e.target.value)}
                 className="mb-2 w-full"
                 placeholder="Name"
                 required
               />
               <input
                 type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                value={tempEmail}
+                onChange={(e) => setTempEmail(e.target.value)}
                 className="mb-2 w-full"
                 placeholder="Email"
                 required
               />
               <input
                 type="tel"
-                value={phone}
-                defaultValue={phone}
-                onChange={(e) => setPhone(e.target.value)}
+                value={tempPhone}
+                onChange={(e) => setTempPhone(e.target.value)}
                 className="mb-2 w-full"
                 placeholder="Phone Number"
                 required
