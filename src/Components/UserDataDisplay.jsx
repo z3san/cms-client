@@ -31,8 +31,27 @@ const UserDataDisplay = () => {
     setShowForm(false);
   };
 
+  // Validation for email
+  const isEmailValid = (value) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(value);
+  };
+
+  // Validation for phone number (allows only digits)
+  const isPhoneValid = (value) => {
+    const phoneRegex = /^\d+$/;
+    return phoneRegex.test(value);
+  };
+
   const handleSubmit = async (event) => {
+
     event.preventDefault();
+
+     if (!isEmailValid(email) || !isPhoneValid(phone)) {
+       alert("Please enter valid email and phone number.");
+       return;
+     }
+
 
     const userData = {
       name: name,
@@ -168,7 +187,7 @@ const UserDataDisplay = () => {
 
                   <label htmlFor="phone">Phone Number:</label>
                   <input
-                    type="number"
+                    type="tel"
                     id="phone"
                     value={phone}
                     onChange={(e) => setPhone(e.target.value)}

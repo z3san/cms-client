@@ -1,7 +1,7 @@
 import { useState } from "react";
-import { FaEdit,   FaPhoneAlt, FaTrash } from "react-icons/fa";
-
+import { FaEdit, FaPhoneAlt, FaTrash } from "react-icons/fa";
 import { AiOutlineMail } from "react-icons/ai";
+
 const UserCard = ({ user, onDelete, onUpdate }) => {
   const {
     _id,
@@ -18,8 +18,25 @@ const UserCard = ({ user, onDelete, onUpdate }) => {
   const handleDelete = () => {
     onDelete(_id);
   };
-//Update card modal functionality
+
+  // Validation for email
+  const isEmailValid = (value) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(value);
+  };
+
+  // Validation for phone number (allows only digits and optional '+')
+  const isPhoneValid = (value) => {
+    const phoneRegex = /^[+\d]+$/;
+    return phoneRegex.test(value);
+  };
+
   const handleUpdate = () => {
+    if (!isEmailValid(email) || !isPhoneValid(phone)) {
+      alert("Please enter valid email and phone number.");
+      return;
+    }
+
     const updatedUserData = {
       name,
       email,
